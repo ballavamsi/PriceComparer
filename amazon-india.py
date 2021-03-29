@@ -4,11 +4,12 @@ from requests.exceptions import HTTPError
 from bs4 import BeautifulSoup
 from lxml import html
 import time
+import json as jsonm
 
-MAIN_URL = 'https://www.amazon.in/s?k={product_name}&ref=nb_sb_noss'
+MAIN_URL = 'https://www.amazon.in/s?k=[product_name]&ref=nb_sb_noss'
 
 def startScrapping(product_name,attempt=0):
-    URL = MAIN_URL.replace('{product_name}',product_name)
+    URL = MAIN_URL.replace('[product_name]',product_name)
     products = []
     try:
         if(attempt>0):
@@ -41,7 +42,7 @@ def startScrapping(product_name,attempt=0):
                 #    print(eachlink)
             print("Name:" + product.name + " Current Price:" + product.price + " Original Price:" + product.orginal_price + " No of user rating:" + product.no_of_users_rated + " Website:"+ product.website)      
             products.append(product)
-            return products
+            #return products
     except HTTPError as http_err:
         print(f'HTTP error occurred: {http_err}')  # Python 3.6
         time.sleep(10)
@@ -62,8 +63,8 @@ def startScrapping(product_name,attempt=0):
         print('Success')
 
     #for eachp in products:
-    #    print(eachp.name + " " + eachp.price + " " + eachp.orginal_price + " " + eachp.no_of_users_rated)      
-    
+    #    print("Name:" + eachp.name + " Current Price:" + eachp.price + " Original Price:" + eachp.orginal_price + " No of user rating:" + eachp.no_of_users_rated + " Website:"+ eachp.website)      
+    #    print(jsonm.dumps(eachp))
 
 # execute this using python .\amazon-india.py
 def main():
