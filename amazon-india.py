@@ -1,4 +1,4 @@
-import product_model
+import models.product as productsmodel
 import requests
 from requests.exceptions import HTTPError
 from bs4 import BeautifulSoup
@@ -16,7 +16,7 @@ def startScrapping(product_name):
         results = BeautifulSoup(response.content, 'html.parser')
         product_elements = results.find_all('div', class_='s-result-item')
         for each_product in product_elements:
-            product = product_model.Product
+            product = productsmodel.Product
             all_links = each_product.find_all('a',class_='a-link-normal')
             for eachlink in all_links:
                 if(eachlink.find('span',class_='a-size-medium')):
@@ -48,7 +48,7 @@ def startScrapping(product_name):
         print('Success')
     
 
-
+# execute this using python .\amazon-india.py
 def main():
     print("amazon method")
     startScrapping("printer")
