@@ -7,8 +7,9 @@ import time
 import json as jsonm
 
 MAIN_URL = 'https://www.amazon.in/s?k=[product_name]&ref=nb_sb_noss'
+logging = False
 
-def startScrapping(product_name,attempt=0):
+def search(product_name,attempt=0):
     URL = MAIN_URL.replace('[product_name]',product_name)
     products = []
     try:
@@ -21,7 +22,7 @@ def startScrapping(product_name,attempt=0):
         results = BeautifulSoup(response.content, 'html.parser')
         product_elements = results.find_all('div', class_='s-result-item')
         for each_product in product_elements:
-            product = productsmodel.Product
+            product = productsmodel.Product()
             all_links = each_product.find_all('a',class_='a-link-normal')
             for eachlink in all_links:
                 if(eachlink.find('span',class_='a-size-medium')):
@@ -40,28 +41,30 @@ def startScrapping(product_name,attempt=0):
                     product.no_of_users_rated = eachlink.text
                 #if(eachlink.find('span',class_='a-price')):
                 #    print(eachlink)
-            print("Name:" + product.name + " Current Price:" + product.price + " Original Price:" + product.orginal_price + " No of user rating:" + product.no_of_users_rated + " Website:"+ product.website)      
-            products.append(product)
+            if logging:    
+                print("Name:" + product.name + " Current Price:" + product.price + " Original Price:" + product.orginal_price + " No of user rating:" + product.no_of_users_rated + " Website:"+ product.website)      
+            if(product.name != ""):
+                products.append(product)
             #return products
     except HTTPError as http_err:
         print(f'HTTP error occurred: {http_err}')  # Python 3.6
         time.sleep(10)
         if(attempt<=5):
-            startScrapping(product_name,attempt+1)
+            return search(product_name,attempt+1)
         else:
-            print('Maximum 5 retries reached')
+            print('Maximum retries reached')
             return []    
     except Exception as err:
         print(f'Other error occurred: {err}')  # Python 3.6
         time.sleep(10)
         if(attempt<=5):
-            startScrapping(product_name,attempt+1)
+            return search(product_name,attempt+1)
         else:
-            print('Maximum 5 retries reached')
+            print('Maximum retries reached')
             return [] 
     else:
         print('Success')
-
+    return products
     #for eachp in products:
     #    print("Name:" + eachp.name + " Current Price:" + eachp.price + " Original Price:" + eachp.orginal_price + " No of user rating:" + eachp.no_of_users_rated + " Website:"+ eachp.website)      
     #    print(jsonm.dumps(eachp))
@@ -69,7 +72,9 @@ def startScrapping(product_name,attempt=0):
 # execute this using python .\amazon-india.py
 def main():
     print("amazon method")
-    startScrapping("printer")
+    #products = search("printer")
+    #for p in products:
+    #    print(p.name)
 
 if __name__ == "__main__":
     main()  
