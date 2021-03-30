@@ -31,6 +31,7 @@ class WebScrape(object):
 search = WebScrape()
 result = search.start("amazon","curved led screen")
 
+print("------ completed web scrapping ------")
 for product in result:
-    print("Name:" + product.name + " Current Price:" + product.price + " Original Price:" + product.orginal_price + " No of user rating:" + product.no_of_users_rated + " Website:"+ product.website)      
+    print("Name:" + product.name + " Current Price:" + product.price + " Original Price:" + product.orginal_price + " No of user rated:" + product.no_of_users_rated + " Rating:" + product.rating + " Website:"+ product.website)      
             

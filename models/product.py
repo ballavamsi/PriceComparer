@@ -6,7 +6,7 @@ class Product:
     rating=""
     no_of_users_rated=""
     website=""
-    url=""
+    #url=""
 
 def main():
     print("product model")
