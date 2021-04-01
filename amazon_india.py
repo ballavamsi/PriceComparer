@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from lxml import html
 import time
 import json as jsonm
+import sys,os
 
 BASE_URL = 'https://www.amazon.in'
 SEARCH_PRE_PARAMS = '/s?k='
@@ -68,6 +69,9 @@ def search(product_name, attempt=0):
             return []
     except Exception as err:
         print(f'Other error occurred: {err}')  # Python 3.6
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
         time.sleep(10)
         if(attempt <= 5):
             return search(product_name, attempt+1)

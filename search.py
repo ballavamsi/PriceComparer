@@ -1,8 +1,9 @@
 import pandas as pd
 import switcher
 import amazon_india as amazon
+import flipkart_india as flipkart
 import models.product as productsmodel
-import sys
+import sys,os
 import getopt
 
 records_to_consider = 5
@@ -12,25 +13,38 @@ global products
 
 def main(argv):
     pname = ""
+    websiteToSearch = "all"
     try:
-        opts, args = getopt.getopt(argv,"n:o",["name="])
+        opts,args = getopt.getopt(argv,"n:w:",["name=","website="])
     except getopt.GetoptError:
-        print('start.py -n <productname>')
-        print('start.py --name <productname>')
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+        print('start.py -n <productname> [-w "amazon"|"flipkart"|"all"]')
+        print('start.py --name <productname> [--website "amazon"|"flipkart"|"all"]')
         sys.exit(2)
-    for opt, arg in opts:
-        if opt in ('-n','--name'):
-            pname = arg
-        else:
-            print('start.py -n <productname>')
-            sys.exit()
+    #opts = x for x in opts if x)
+    print(opts)    
+    for opt in opts:
+        if opt:
+            if opt[0] in ('-n','--name'):
+                pname = opt[1]
+                print(pname)
+            if opt[0] in ('-w','--website'):
+                websiteToSearch = opt[1]     
+        #else:
+        #    print('start.py -n <productname> [-w "amazon"|"flipkart"|"all"]')
+        #    sys.exit()
     if(pname != ""):            
-        print("Searching for product name:" + arg)
-        search(pname)
+        print("Searching for product name:" + pname)
+        search(websiteToSearch,pname)
     else:
         print('Product name to search cannot be empty')
-        print('start.py -n <productname>')
-        print('start.py --name <productname>')
+        print('start.py -n <productname> [-a,-f]')
+        print('start.py --name <productname> [-a,-f]')
+        print('-a = Search in amazon')
+        print('-f = Search in flipkart')
+        sys.exit()
  
 class WebScrape(object):
     def start(self, website, productname):
@@ -41,25 +55,21 @@ class WebScrape(object):
     def amazonWebScrape(self, productname):
         print("amazon:"+productname)
         amazonproducts = amazon.search(productname)
-        # getting top 5 records
-        products = amazonproducts[:records_to_consider]
-        return products
+        return amazonproducts[:records_to_consider]
 
     def flipkartWebScrape(self, productname):
-        print("flipkart:"+productname)
+        flipkartproducts = flipkart.search(productname)
+        return flipkartproducts[:records_to_consider]
 
     def allSitesWebScrape(self, productname):
-        products = []
         print("all:"+productname)
         amazonproducts = amazon.search(productname)
-        # getting top 5 records
-        products = (amazonproducts[:records_to_consider])
-        return products
-
+        flipkartproducts = flipkart.search(productname)
+        return amazonproducts[:records_to_consider] + flipkartproducts[:records_to_consider]
        
-def search(name):
+def search(websiteToSearch,name):
     search = WebScrape()
-    result = search.start("amazon",name)
+    result = search.start(websiteToSearch,name)
 
     print("------ completed web scrapping ------")
     for product in result:
