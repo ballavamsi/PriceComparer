@@ -58,6 +58,7 @@ class WebScrape(object):
         return amazonproducts[:records_to_consider]
 
     def flipkartWebScrape(self, productname):
+        print("flipkart:"+productname)
         flipkartproducts = flipkart.search(productname)
         return flipkartproducts[:records_to_consider]
 
@@ -70,11 +71,13 @@ class WebScrape(object):
 def search(websiteToSearch,name):
     search = WebScrape()
     result = search.start(websiteToSearch,name)
-
+    dataResult = []
     print("------ completed web scrapping ------")
     for product in result:
-        print("Name:" + product.name + " Current Price:" + product.price + " Original Price:" + product.orginal_price + " No of user rated:" + product.no_of_users_rated + " Rating:" + product.rating + " Website:"+ product.website)      
-                
+        dataResult.append(product.__dict__)
+        #print(product.__dict__)
+        #print("Name:" + product.name + " Current Price:" + product.price + " Original Price:" + product.orginal_price + " No of user rated:" + product.no_of_users_rated + " Rating:" + product.rating + " Website:"+ product.website)      
+    return dataResult
 
 
 if __name__ == "__main__":
