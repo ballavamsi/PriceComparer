@@ -9,8 +9,6 @@ import getopt
 records_to_consider = 5
 global products
 
-
-
 def main(argv):
     pname = ""
     websiteToSearch = "all"
@@ -75,10 +73,7 @@ def search(websiteToSearch,name):
     print("------ completed web scrapping ------")
     for product in result:
         dataResult.append(product.__dict__)
-        #print(product.__dict__)
-        #print("Name:" + product.name + " Current Price:" + product.price + " Original Price:" + product.orginal_price + " No of user rated:" + product.no_of_users_rated + " Rating:" + product.rating + " Website:"+ product.website)      
     return dataResult
-
 
 if __name__ == "__main__":
    main(sys.argv[1:])
